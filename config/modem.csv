@@ -12,5 +12,5 @@ AT+COPS=?,"+COPS: (2,""MegaFon"",""MegaFon"",""25002"",7),(1,""MTS"",""MTS"",""2
 AT+COPS=*,OK
 AT+CPIN?,"+CPIN: READY\r\n\r\nOK"
 AT+CPIN=[0-9][0-9][0-9][0-9],OK
-AT+CPIN=*,"+CME ERROR: incorrect password"
+AT+CPIN=*,%CME 16%
 AT+CSQ,"+CSQ: 21,99\r\n\r\nOK"

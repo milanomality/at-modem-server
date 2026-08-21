@@ -52,7 +52,10 @@ void printUsage(const char* argv0) {
         "      --stdio          вместо tty работать через stdin/stdout\n"
         "      --no-echo        стартовать с выключенным эхом (ATE0)\n"
         "      --case-sensitive шаблоны чувствительны к регистру\n"
-        "      --error TEXT     ответ на нераспознанную команду, по умолчанию ERROR\n"
+        "      --cmee N         форма выдачи ошибок: 0 — ERROR (по умолчанию),\n"
+        "                       1 — +CME ERROR: <код>, 2 — +CME ERROR: <текст>\n"
+        "      --error TEXT     ответ на нераспознанную команду при +CMEE=0,\n"
+        "                       по умолчанию ERROR\n"
         "      --dry-run CMD    проверить команду по словарю и выйти (порт не нужен)\n"
         "      --list           показать загруженные правила и выйти\n"
         "  -v, --verbose        подробный лог (побайтовый обмен)\n"
@@ -76,6 +79,7 @@ struct Options {
     bool stdio = false;
     bool echo = true;
     bool caseInsensitive = true;
+    int cmee = 0;
     std::string errorResponse = "ERROR";
     std::string dryRun;
     bool hasDryRun = false;
@@ -110,6 +114,13 @@ Options parseArgs(int argc, char** argv, bool& shouldExit, int& exitCode) {
         else if (a == "--stdio")               o.stdio = true;
         else if (a == "--no-echo")             o.echo = false;
         else if (a == "--case-sensitive")      o.caseInsensitive = false;
+        else if (a == "--cmee") {
+            const std::string v = requireValue(argc, argv, i, "--cmee");
+            if (v != "0" && v != "1" && v != "2") {
+                throw std::runtime_error("--cmee принимает только 0, 1 или 2, получено: " + v);
+            }
+            o.cmee = v[0] - '0';
+        }
         else if (a == "--error")               o.errorResponse = requireValue(argc, argv, i, "--error");
         else if (a == "--dry-run") {
             o.dryRun = requireValue(argc, argv, i, "--dry-run");
@@ -177,6 +188,7 @@ int main(int argc, char** argv) {
 
         ndm::ServerConfig cfg;
         cfg.echo = opt.echo;
+        cfg.cmee = opt.cmee;
         cfg.errorResponse = opt.errorResponse;
 
         ndm::ModemServer server(port, dict, cfg);
