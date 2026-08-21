@@ -50,5 +50,21 @@ add_test(NAME integration
             ${CMAKE_CURRENT_SOURCE_DIR}/config/modem.dict
 )
 
+# Клиент для сквозного теста через настоящее tty. Намеренно не линкуется
+# с atmodem: работа с termios на стороне клиента должна быть независимой.
+add_executable(serial_probe tests/serial_probe.cpp)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(serial_probe PRIVATE -Wall -Wextra -Wpedantic -Wshadow)
+endif()
+
+add_test(NAME serial
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tests/serial_test.sh
+            $<TARGET_FILE:at-modem-server>
+            $<TARGET_FILE:serial_probe>
+            ${CMAKE_CURRENT_SOURCE_DIR}/config/modem.dict
+)
+# Без socat поднять виртуальную пару pty негде — тест пропускается, а не падает.
+set_tests_properties(serial PROPERTIES SKIP_RETURN_CODE 77 TIMEOUT 120)
+
 install(TARGETS at-modem-server RUNTIME DESTINATION bin)
 install(FILES config/modem.dict DESTINATION share/at-modem-server)

@@ -15,6 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Установить socat (нужен для сквозного tty-теста)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq socat
+
       - name: Сборка (${{ matrix.compiler }})
         run: |
           cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
@@ -27,6 +30,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Установить socat (нужен для сквозного tty-теста)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq socat
 
       - name: Сборка с ASan/UBSan
         run: |
