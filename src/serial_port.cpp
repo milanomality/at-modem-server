@@ -15,8 +15,8 @@
 namespace ndm {
 namespace {
 
-std::string errnoText(const char* what) {
-    return std::string(what) + ": " + std::strerror(errno);
+std::string errnoText(const std::string& what) {
+    return what + ": " + std::strerror(errno);
 }
 
 }  // namespace
