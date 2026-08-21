@@ -1,5 +1,7 @@
 # at-modem-server
 
+[![ci](https://github.com/milanomality/at-modem-server/actions/workflows/ci.yml/badge.svg)](https://github.com/milanomality/at-modem-server/actions/workflows/ci.yml)
+
 Сервер на C++17, который слушает tty-устройство и отвечает на AT-команды,
 притворяясь обычным модемом. Ответы задаются словарём ожиданий во внешнем
 файле; шаблоны разбираются собственным матчером — **regex-библиотеки не
@@ -201,7 +203,13 @@ scripts/run_socat.sh       виртуальная пара pty для запус
 Логи идут в `stderr`, а не в `stdout`: в режиме `--stdio` стандартный вывод
 занят ответами «модема».
 
-## Требования
+## Требования и проверка
 
 Linux, компилятор с поддержкой C++17 (GCC ≥ 7 или Clang ≥ 6), CMake ≥ 3.13.
-Для `scripts/run_socat.sh` дополнительно нужен `socat`.
+Внешних зависимостей нет; для `scripts/run_socat.sh` дополнительно нужен
+`socat`.
+
+CI (`.github/workflows/ci.yml`) на каждый push собирает проект под **GCC** и
+**Clang** в Release и отдельно с **ASan/UBSan**, после чего прогоняет оба
+набора тестов: 31 юнит-тест матчера, словаря и вспомогательных функций плюс
+16 интеграционных проверок протокола на живом бинарнике.
