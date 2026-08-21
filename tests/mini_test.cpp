@@ -49,6 +49,12 @@ std::string show(const std::string& v) {
 int runAll() {
     int failedTests = 0;
 
+    // Пустой реестр означал бы «0 провалено» и зелёный прогон на пустом месте.
+    if (registry().empty()) {
+        std::printf("НИ ОДНОГО ТЕСТА НЕ ЗАРЕГИСТРИРОВАНО\n");
+        return 1;
+    }
+
     for (const TestCase& tc : registry()) {
         g_failuresInCurrent = 0;
         std::printf("[ RUN  ] %s\n", tc.name.c_str());
