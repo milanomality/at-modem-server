@@ -512,7 +512,12 @@ void ModemServer::handleCommand(const std::string& command) {
     lastCommand_ = command;
 
     const std::vector<std::string> parts = splitCommandChain(command);
-    if (parts.empty()) return;
+    if (parts.empty()) {
+        // Строка состоит из одних разделителей — команды в ней нет.
+        ++unmatched_;
+        sendResponse(errorFor(4));
+        return;
+    }
     if (parts.size() == 1) {
         // Одиночная команда — ответ уходит ровно так, как записан в словаре.
         sendResponse(evaluate(parts[0]));

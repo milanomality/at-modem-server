@@ -101,6 +101,8 @@ check 'цепочка с пустым блоком' 'AT;+CSQ;+CREG?\r' \
 check 'цепочка рвётся на ошибке' 'AT+CSQ;+NOPE\r' \
       'AT+CSQ;+NOPE\r\r\n+CSQ: 21,99\r\n\r\nERROR\r\n'
 
+check 'строка из одних ; -> ERROR' ';;\r'   ';;\r\r\nERROR\r\n'
+
 check 'цепочка с +CMEE=2'       'AT+CMEE=2\rAT+CSQ;+NOPE\r' \
       'AT+CMEE=2\r\r\nOK\r\nAT+CSQ;+NOPE\r\r\n+CSQ: 21,99\r\n\r\n+CME ERROR: operation not supported\r\n'
 
